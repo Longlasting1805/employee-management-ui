@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import EmployeeToolbar from "../../components/employees/EmployeeToolbar";
 import EmployeeTable from "../../components/employees/EmployeeTable";
-
+import EmptyState from "../../components/employees/EmptyState";
 import {
     getEmployees,
     searchEmployees,
@@ -92,10 +92,20 @@ function EmployeeListPage() {
                 searching={searching}
             />
 
-            <EmployeeTable
-                employees={employees}
-                onDelete={handleDelete}
-            />
+            {
+                employees.length === 0 ? (
+
+                    <EmptyState />
+
+                ) : (
+
+                    <EmployeeTable
+                        employees={employees}
+                        onDelete={handleDelete}
+                    />
+
+                )
+            }
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
     createEmployee,
     updateEmployee,
@@ -86,7 +87,14 @@ function EmployeeForm({
 
             }
 
+            toast.success(
+                mode === "create"
+                    ? "Employee created successfully!"
+                    : "Employee updated successfully!"
+            );
+
             navigate("/employees");
+
         } catch (err) {
             console.error(err);
 
@@ -96,10 +104,14 @@ function EmployeeForm({
                 err.response.data &&
                 typeof err.response.data === "object"
             ) {
-                setErrors(err.response.data);
+                setErrors(
+                    err.response.data.errors || {}
+                );
             } else {
+                toast.error("Something went wrong.");
+
                 setErrors({
-                    general: "Unable to create employee.",
+                    general: "Something went wrong.",
                 });
             }
         } finally {
