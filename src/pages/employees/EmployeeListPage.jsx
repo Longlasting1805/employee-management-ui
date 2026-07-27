@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
-import { getEmployees } from "../../services/employeeService";
+import EmployeeToolbar from "../../components/employees/EmployeeToolbar";
+import EmployeeTable from "../../components/employees/EmployeeTable";
+
+import {
+    getEmployees,
+    searchEmployees,
+} from "../../services/employeeService";
 
 function EmployeeListPage() {
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searching, setSearching] = useState(false);
     const [error, setError] = useState("");
-
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
+    const [search, setSearch] = useState("");
 
     const fetchEmployees = async () => {
         try {
@@ -17,7 +21,6 @@ function EmployeeListPage() {
             const data = await getEmployees();
 
             setEmployees(data.content);
-
             setError("");
         } catch (err) {
             console.error(err);
@@ -27,92 +30,72 @@ function EmployeeListPage() {
         }
     };
 
+    const searchForEmployees = async () => {
+        try {
+            setSearching(true);
+
+            const data = await searchEmployees(search);
+
+            setEmployees(data.content);
+            setError("");
+        } catch (err) {
+            console.error(err);
+            setError("Search failed.");
+        } finally {
+            setSearching(false);
+        }
+    };
+
+    const handleDelete = (id) => {
+
+        setEmployees((prev) =>
+            prev.filter(
+                (employee) => employee.id !== id
+            )
+        );
+
+    };
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (search.trim()) {
+                searchForEmployees();
+            } else {
+                fetchEmployees();
+            }
+        }, 300);
+
+        return () => clearTimeout(timeout);
+    }, [search]);
+
     if (loading) {
-        return <h2>Loading employees...</h2>;
+        return (
+            <div className="text-center mt-10 text-lg">
+                Loading employees...
+            </div>
+        );
     }
 
     if (error) {
-        return <h2>{error}</h2>;
+        return (
+            <div className="text-center mt-10 text-red-600">
+                {error}
+            </div>
+        );
     }
 
     return (
         <div>
+            <EmployeeToolbar
+                search={search}
+                onSearchChange={(e) => setSearch(e.target.value)}
+                searching={searching}
+            />
 
-            <h1 className="text-3xl font-bold mb-6">
-                Employees
-            </h1>
-
-            <div className="bg-white rounded-xl shadow overflow-hidden">
-
-                <table className="min-w-full">
-
-                    <thead className="bg-slate-100">
-
-                    <tr>
-
-                        <th className="px-6 py-4 text-left">
-                            Name
-                        </th>
-
-                        <th className="px-6 py-4 text-left">
-                            Email
-                        </th>
-
-                        <th className="px-6 py-4 text-left">
-                            Phone
-                        </th>
-
-                        <th className="px-6 py-4 text-left">
-                            Created
-                        </th>
-
-                    </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                    {employees.map((employee) => (
-
-                        <tr
-                            key={employee.id}
-                            className="border-t"
-                        >
-
-                            <td className="px-6 py-4">
-
-                                {employee.firstName} {employee.lastName}
-
-                            </td>
-
-                            <td className="px-6 py-4">
-
-                                {employee.email}
-
-                            </td>
-
-                            <td className="px-6 py-4">
-
-                                {employee.phoneNumber}
-
-                            </td>
-
-                            <td className="px-6 py-4">
-
-                                {new Date(employee.createdAt).toLocaleDateString()}
-
-                            </td>
-
-                        </tr>
-
-                    ))}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
+            <EmployeeTable
+                employees={employees}
+                onDelete={handleDelete}
+            />
         </div>
     );
 }

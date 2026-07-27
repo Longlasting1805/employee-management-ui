@@ -45,7 +45,7 @@ export const searchEmployees = async (
 };
 
 /**
- * Get one employee
+ * Get a single employee
  */
 export const getEmployeeById = async (id) => {
     const response = await api.get(`/employees/${id}`);
@@ -61,7 +61,7 @@ export const createEmployee = async (employeeData) => {
 };
 
 /**
- * Update employee
+ * Update employee (PUT)
  */
 export const updateEmployee = async (id, employeeData) => {
     const response = await api.put(`/employees/${id}`, employeeData);
@@ -69,7 +69,7 @@ export const updateEmployee = async (id, employeeData) => {
 };
 
 /**
- * Patch employee
+ * Partially update employee (PATCH)
  */
 export const patchEmployee = async (id, employeeData) => {
     const response = await api.patch(`/employees/${id}`, employeeData);
@@ -80,5 +80,6 @@ export const patchEmployee = async (id, employeeData) => {
  * Delete employee
  */
 export const deleteEmployee = async (id) => {
-    await api.delete(`/employees/${id}`);
+    const response = await api.delete(`/employees/${id}`);
+    return response.data;
 };

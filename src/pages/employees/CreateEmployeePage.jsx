@@ -1,8 +1,10 @@
+import EmployeeForm from "../../components/employees/EmployeeForm";
+
 function CreateEmployeePage() {
     return (
-        <h1 className="text-3xl font-bold">
-            Add Employee
-        </h1>
+        <div className="p-6">
+            <EmployeeForm />
+        </div>
     );
 }
 
