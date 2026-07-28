@@ -2,12 +2,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 import authService from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
 
 function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
+
     const navigate = useNavigate();
+
     const { login } = useAuth();
 
     const {
@@ -17,28 +21,37 @@ function LoginPage() {
     } = useForm();
 
     const onSubmit = async (data) => {
+
+        const loadingToast = toast.loading("Signing in...");
+
         try {
+
             const response = await authService.login(data);
 
-            console.log("JWT Response:", response);
-
             login(response.token);
+
+            toast.dismiss(loadingToast);
+
+            toast.success("Welcome back!");
 
             navigate("/dashboard");
 
         } catch (error) {
-            console.error(
-                error.response?.data?.message || "Login failed."
+
+            toast.dismiss(loadingToast);
+
+            toast.error(
+                error.response?.data?.message ||
+                "Invalid email or password."
             );
 
-            alert(
-                error.response?.data?.message || "Invalid email or password."
-            );
         }
+
     };
 
     return (
         <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+
             <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
 
                 <h1 className="text-3xl font-bold text-center text-slate-800">
@@ -54,8 +67,8 @@ function LoginPage() {
                     className="space-y-5"
                 >
 
-                    {/* Email */}
                     <div>
+
                         <label className="block mb-2 font-medium">
                             Email
                         </label>
@@ -74,15 +87,17 @@ function LoginPage() {
                                 {errors.email.message}
                             </p>
                         )}
+
                     </div>
 
-                    {/* Password */}
                     <div>
+
                         <label className="block mb-2 font-medium">
                             Password
                         </label>
 
                         <div className="relative">
+
                             <input
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Enter your password"
@@ -94,11 +109,16 @@ function LoginPage() {
 
                             <button
                                 type="button"
-                                onClick={() => setShowPassword(!showPassword)}
+                                onClick={() =>
+                                    setShowPassword(!showPassword)
+                                }
                                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                             >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                {showPassword
+                                    ? <FaEyeSlash />
+                                    : <FaEye />}
                             </button>
+
                         </div>
 
                         {errors.password && (
@@ -106,6 +126,7 @@ function LoginPage() {
                                 {errors.password.message}
                             </p>
                         )}
+
                     </div>
 
                     <button
@@ -113,12 +134,15 @@ function LoginPage() {
                         disabled={isSubmitting}
                         className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 rounded-lg font-semibold transition"
                     >
-                        {isSubmitting ? "Logging in..." : "Login"}
+                        {isSubmitting
+                            ? "Logging in..."
+                            : "Login"}
                     </button>
 
                 </form>
 
             </div>
+
         </div>
     );
 }

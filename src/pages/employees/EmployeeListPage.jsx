@@ -10,7 +10,6 @@ import {
 } from "../../services/employeeService";
 
 function EmployeeListPage() {
-
     const [employees, setEmployees] = useState([]);
 
     const [loading, setLoading] = useState(true);
@@ -34,9 +33,7 @@ function EmployeeListPage() {
     const [totalElements, setTotalElements] = useState(0);
 
     const fetchEmployees = async () => {
-
         try {
-
             setLoading(true);
 
             const data = await getEmployees(
@@ -47,112 +44,75 @@ function EmployeeListPage() {
             );
 
             setEmployees(data.content);
-
             setTotalPages(data.totalPages);
-
             setTotalElements(data.totalElements);
 
             setError("");
-
         } catch (err) {
-
             console.error(err);
-
             setError("Failed to load employees.");
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
     const searchForEmployees = async () => {
-
         try {
-
             setSearching(true);
 
             const data = await searchEmployees(
                 search,
                 page,
-                size
+                size,
+                sortBy,
+                direction
             );
 
             setEmployees(data.content);
-
             setTotalPages(data.totalPages);
-
             setTotalElements(data.totalElements);
 
             setError("");
-
         } catch (err) {
-
             console.error(err);
-
             setError("Search failed.");
-
         } finally {
-
             setSearching(false);
-
         }
-
     };
 
     const handleDelete = (id) => {
-
         setEmployees((prev) =>
-            prev.filter(
-                (employee) => employee.id !== id
-            )
+            prev.filter((employee) => employee.id !== id)
         );
 
+        setTotalElements((prev) => prev - 1);
     };
 
     const handleSort = (field) => {
-
         if (sortBy === field) {
-
             setDirection((prev) =>
-                prev === "asc"
-                    ? "desc"
-                    : "asc"
+                prev === "asc" ? "desc" : "asc"
             );
-
         } else {
-
             setSortBy(field);
-
             setDirection("asc");
-
         }
 
         setPage(0);
-
     };
 
     useEffect(() => {
-
         const timeout = setTimeout(() => {
-
             if (search.trim()) {
-
                 searchForEmployees();
-
             } else {
-
                 fetchEmployees();
-
             }
-
         }, 300);
 
         return () => clearTimeout(timeout);
-
-    },  [
+    }, [
         search,
         page,
         size,
@@ -161,189 +121,118 @@ function EmployeeListPage() {
     ]);
 
     if (loading) {
-
         return (
-
             <div className="text-center mt-10 text-lg">
-
                 Loading employees...
-
             </div>
-
         );
-
     }
 
     if (error) {
-
         return (
-
             <div className="text-center mt-10 text-red-600">
-
                 {error}
-
             </div>
-
         );
-
     }
 
     return (
-
         <div>
-
             <EmployeeToolbar
                 search={search}
                 onSearchChange={(e) => {
-
                     setSearch(e.target.value);
-
                     setPage(0);
-
                 }}
                 searching={searching}
             />
 
-            {
+            {employees.length === 0 ? (
+                <EmptyState />
+            ) : (
+                <>
+                    <EmployeeTable
+                        employees={employees}
+                        onDelete={handleDelete}
+                        sortBy={sortBy}
+                        direction={direction}
+                        onSort={handleSort}
+                    />
 
-                employees.length === 0
+                    <div className="flex items-center justify-between mt-6">
+                        <p className="text-gray-600">
+                            Showing{" "}
+                            {totalElements === 0
+                                ? 0
+                                : page * size + 1}
+                            {" - "}
+                            {Math.min(
+                                (page + 1) * size,
+                                totalElements
+                            )}{" "}
+                            of {totalElements} employees
+                        </p>
 
-                    ? <EmptyState />
+                        <div className="flex items-center gap-2">
+                            <button
+                                disabled={page === 0}
+                                onClick={() =>
+                                    setPage((prev) => prev - 1)
+                                }
+                                className="px-4 py-2 border rounded disabled:opacity-40"
+                            >
+                                Previous
+                            </button>
 
-                    : (
-
-                        <>
-
-                            <EmployeeTable
-                                employees={employees}
-                                onDelete={handleDelete}
-                                sortBy={sortBy}
-                                direction={direction}
-                                onSort={handleSort}
-                            />
-
-                            <div className="flex items-center justify-between mt-6">
-
-                                <p className="text-gray-600">
-
-                                    Showing{" "}
-
-                                    {page * size + 1}
-
-                                    -
-
-                                    {Math.min(
-                                        (page + 1) * size,
-                                        totalElements
-                                    )}
-
-                                    {" "}of{" "}
-
-                                    {totalElements}
-
-                                    {" "}employees
-
-                                </p>
-
-                                <div className="flex items-center gap-2">
-
+                            {[...Array(totalPages)].map(
+                                (_, index) => (
                                     <button
-
-                                        disabled={page === 0}
-
+                                        key={index}
                                         onClick={() =>
-                                            setPage(page - 1)
+                                            setPage(index)
                                         }
-
-                                        className="px-4 py-2 border rounded disabled:opacity-40"
-
+                                        className={`px-4 py-2 rounded ${
+                                            page === index
+                                                ? "bg-blue-600 text-white"
+                                                : "border"
+                                        }`}
                                     >
-
-                                        Previous
-
+                                        {index + 1}
                                     </button>
+                                )
+                            )}
 
-                                    {
+                            <button
+                                disabled={
+                                    page + 1 >= totalPages
+                                }
+                                onClick={() =>
+                                    setPage((prev) => prev + 1)
+                                }
+                                className="px-4 py-2 border rounded disabled:opacity-40"
+                            >
+                                Next
+                            </button>
+                        </div>
 
-                                        [...Array(totalPages)].map((_, index) => (
-
-                                            <button
-
-                                                key={index}
-
-                                                onClick={() => setPage(index)}
-
-                                                className={`px-4 py-2 rounded ${page === index
-                                                    ? "bg-blue-600 text-white"
-                                                    : "border"
-                                                }`}
-
-                                            >
-
-                                                {index + 1}
-
-                                            </button>
-
-                                        ))
-
-                                    }
-
-                                    <button
-
-                                        disabled={page + 1 >= totalPages}
-
-                                        onClick={() =>
-                                            setPage(page + 1)
-                                        }
-
-                                        className="px-4 py-2 border rounded disabled:opacity-40"
-
-                                    >
-
-                                        Next
-
-                                    </button>
-
-                                </div>
-
-                                <select
-
-                                    value={size}
-
-                                    onChange={(e) => {
-
-                                        setSize(Number(e.target.value));
-
-                                        setPage(0);
-
-                                    }}
-
-                                    className="border rounded px-3 py-2"
-
-                                >
-
-                                    <option value={5}>5</option>
-
-                                    <option value={10}>10</option>
-
-                                    <option value={20}>20</option>
-
-                                    <option value={50}>50</option>
-
-                                </select>
-
-                            </div>
-
-                        </>
-
-                    )
-
-            }
-
+                        <select
+                            value={size}
+                            onChange={(e) => {
+                                setSize(Number(e.target.value));
+                                setPage(0);
+                            }}
+                            className="border rounded px-3 py-2"
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
+                </>
+            )}
         </div>
-
     );
-
 }
 
 export default EmployeeListPage;

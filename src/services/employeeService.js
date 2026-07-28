@@ -83,3 +83,16 @@ export const deleteEmployee = async (id) => {
     const response = await api.delete(`/employees/${id}`);
     return response.data;
 };
+
+export const exportEmployees = async () => {
+
+    const response = await api.get(
+        "/employees/export",
+        {
+            responseType: "blob",
+        }
+    );
+
+    return response.data;
+
+};

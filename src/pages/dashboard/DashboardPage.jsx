@@ -16,71 +16,71 @@ import {
 import { Link } from "react-router-dom";
 
 import { getDashboardStats } from "../../services/dashboardService";
+import { exportEmployees } from "../../services/employeeService";
 
 function DashboardPage() {
-
     const [stats, setStats] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         const loadDashboard = async () => {
-
             try {
-
                 const data = await getDashboardStats();
-
                 setStats(data);
-
             } catch (err) {
-
                 console.error(err);
-
             } finally {
-
                 setLoading(false);
-
             }
-
         };
 
         loadDashboard();
-
     }, []);
 
+    const handleExport = async () => {
+        try {
+            const blob = await exportEmployees();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "employees.csv";
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error(err);
+            alert("Unable to export employees.");
+        }
+    };
+
     if (loading) {
-
         return (
-
             <div className="text-center mt-20 text-lg">
-
                 Loading dashboard...
-
             </div>
-
         );
-
     }
 
     return (
-
         <div className="space-y-8">
 
             <div>
-
                 <h1 className="text-4xl font-bold">
-
                     Dashboard
-
                 </h1>
 
                 <p className="text-gray-500 mt-2">
-
                     Welcome back! Here's an overview of your system.
-
                 </p>
-
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -114,11 +114,9 @@ function DashboardPage() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
                 <div className="xl:col-span-2">
-
                     <EmployeeGrowthChart
                         data={stats.monthlyRegistrations}
                     />
-
                 </div>
 
                 <RecentEmployees
@@ -130,9 +128,7 @@ function DashboardPage() {
             <div className="bg-white rounded-2xl shadow-md p-6">
 
                 <h2 className="text-xl font-semibold mb-6">
-
                     Quick Actions
-
                 </h2>
 
                 <div className="flex flex-wrap gap-4">
@@ -153,6 +149,8 @@ function DashboardPage() {
                     </Link>
 
                     <button
+                        type="button"
+                        onClick={handleExport}
                         className="border px-6 py-3 rounded-lg hover:bg-gray-100 flex items-center gap-2"
                     >
                         <FaFileExport />
@@ -164,9 +162,7 @@ function DashboardPage() {
             </div>
 
         </div>
-
     );
-
 }
 
 export default DashboardPage;

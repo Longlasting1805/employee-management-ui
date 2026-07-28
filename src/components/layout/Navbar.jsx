@@ -2,9 +2,10 @@ import { FaBell, FaUserCircle } from "react-icons/fa";
 
 function Navbar() {
     return (
-        <header className="bg-white shadow-sm rounded-xl px-6 py-4 flex justify-between items-center mb-8">
+        <header className="bg-white rounded-xl shadow-sm p-6 mb-8 flex items-center justify-between">
 
             <div>
+
                 <h2 className="text-2xl font-bold text-slate-800">
                     Dashboard
                 </h2>
@@ -12,6 +13,7 @@ function Navbar() {
                 <p className="text-gray-500">
                     Welcome back, Admin 👋
                 </p>
+
             </div>
 
             <div className="flex items-center gap-6">
@@ -28,6 +30,7 @@ function Navbar() {
                     />
 
                     <div>
+
                         <p className="font-semibold">
                             Administrator
                         </p>
@@ -35,6 +38,7 @@ function Navbar() {
                         <p className="text-sm text-gray-500">
                             ADMIN
                         </p>
+
                     </div>
 
                 </div>

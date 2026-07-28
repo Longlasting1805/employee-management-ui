@@ -5,10 +5,27 @@ import {
     FaPlus,
     FaSignOutAlt,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 import Navbar from "../components/layout/Navbar";
 
 function DashboardLayout() {
+
+    const navigate = useNavigate();
+
+    const { logout } = useAuth();
+
+    const handleLogout = () => {
+
+        logout();
+
+        toast.success("Logged out successfully.");
+
+        navigate("/");
+
+    };
     return (
         <div className="min-h-screen flex bg-slate-100">
 
@@ -70,8 +87,8 @@ function DashboardLayout() {
                 <div className="p-4 border-t border-slate-700">
 
                     <button
-                        className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-red-600 transition"
-                    >
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-red-600 transition">
                         <FaSignOutAlt />
                         Logout
                     </button>
