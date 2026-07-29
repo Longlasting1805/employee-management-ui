@@ -12,4 +12,31 @@ const authService = {
   },
 };
 
+export const getCurrentUser = async () => {
+  const response = await api.get("/auth/me");
+  return response.data;
+};
+
+export const updateProfile = async (profile) => {
+
+  const response = await api.put(
+      "/auth/me",
+      profile
+  );
+
+  return response.data;
+
+};
+
+export const changePassword = async (passwords) => {
+
+  const response = await api.put(
+      "/auth/change-password",
+      passwords
+  );
+
+  return response.data;
+
+};
+
 export default authService;

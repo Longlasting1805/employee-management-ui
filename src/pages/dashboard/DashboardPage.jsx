@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import StatCard from "../../components/dashboard/StatCard";
 import EmployeeGrowthChart from "../../components/dashboard/EmployeeGrowthChart";
 import RecentEmployees from "../../components/dashboard/RecentEmployees";
+import DashboardSkeleton from "../../components/dashboard/DashboardSkeleton";
+import { useAuth } from "../../context/AuthContext";
 
 import {
     FaUsers,
@@ -22,6 +24,8 @@ function DashboardPage() {
     const [stats, setStats] = useState(null);
 
     const [loading, setLoading] = useState(true);
+
+    const { isAdmin } = useAuth();
 
     useEffect(() => {
         const loadDashboard = async () => {
@@ -63,11 +67,9 @@ function DashboardPage() {
     };
 
     if (loading) {
-        return (
-            <div className="text-center mt-20 text-lg">
-                Loading dashboard...
-            </div>
-        );
+
+        return <DashboardSkeleton />;
+
     }
 
     return (
@@ -133,13 +135,15 @@ function DashboardPage() {
 
                 <div className="flex flex-wrap gap-4">
 
-                    <Link
-                        to="/employees/new"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
-                    >
-                        <FaPlus />
-                        Add Employee
-                    </Link>
+                    {isAdmin && (
+                        <Link
+                            to="/employees/new"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
+                        >
+                            <FaPlus />
+                            Add Employee
+                        </Link>
+                    )}
 
                     <Link
                         to="/employees"
@@ -148,14 +152,16 @@ function DashboardPage() {
                         View Employees
                     </Link>
 
-                    <button
-                        type="button"
-                        onClick={handleExport}
-                        className="border px-6 py-3 rounded-lg hover:bg-gray-100 flex items-center gap-2"
-                    >
-                        <FaFileExport />
-                        Export CSV
-                    </button>
+                    {isAdmin && (
+                        <button
+                            type="button"
+                            onClick={handleExport}
+                            className="border px-6 py-3 rounded-lg hover:bg-gray-100 flex items-center gap-2"
+                        >
+                            <FaFileExport />
+                            Export CSV
+                        </button>
+                    )}
 
                 </div>
 

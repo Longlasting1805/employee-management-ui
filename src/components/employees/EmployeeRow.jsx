@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 import { deleteEmployee } from "../../services/employeeService";
 import ConfirmModal from "../common/ConfirmModal";
+import { useAuth } from "../../context/AuthContext";
 
 function EmployeeRow({
                          employee,
@@ -11,6 +12,8 @@ function EmployeeRow({
                      }) {
 
     const navigate = useNavigate();
+
+    const { isAdmin } = useAuth();
 
     const [showModal, setShowModal] = useState(false);
 
@@ -49,6 +52,7 @@ function EmployeeRow({
     };
 
     return (
+
         <>
 
             <tr className="border-b">
@@ -69,23 +73,37 @@ function EmployeeRow({
                     {new Date(employee.createdAt).toLocaleDateString()}
                 </td>
 
-                <td className="px-6 py-4 flex gap-2">
+                <td className="px-6 py-4">
 
-                    <button
-                        onClick={() =>
-                            navigate(`/employees/edit/${employee.id}`)
-                        }
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
-                    >
-                        Edit
-                    </button>
+                    {isAdmin ? (
 
-                    <button
-                        onClick={() => setShowModal(true)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-                    >
-                        Delete
-                    </button>
+                        <div className="flex gap-2">
+
+                            <button
+                                onClick={() =>
+                                    navigate(`/employees/edit/${employee.id}`)
+                                }
+                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                onClick={() => setShowModal(true)}
+                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    ) : (
+
+                        <span className="text-gray-400 italic">
+                            No actions
+                        </span>
+
+                    )}
 
                 </td>
 
@@ -103,6 +121,7 @@ function EmployeeRow({
             />
 
         </>
+
     );
 
 }

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import EmployeeToolbar from "../../components/employees/EmployeeToolbar";
 import EmployeeTable from "../../components/employees/EmployeeTable";
 import EmptyState from "../../components/employees/EmptyState";
+import EmployeeTableSkeleton from "../../components/employees/EmployeeTableSkeleton";
 
 import {
     getEmployees,
@@ -121,11 +122,9 @@ function EmployeeListPage() {
     ]);
 
     if (loading) {
-        return (
-            <div className="text-center mt-10 text-lg">
-                Loading employees...
-            </div>
-        );
+
+        return <EmployeeTableSkeleton />;
+
     }
 
     if (error) {

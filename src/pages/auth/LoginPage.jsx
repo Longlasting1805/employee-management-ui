@@ -28,7 +28,7 @@ function LoginPage() {
 
             const response = await authService.login(data);
 
-            login(response.token);
+            await login(response.token);
 
             toast.dismiss(loadingToast);
 

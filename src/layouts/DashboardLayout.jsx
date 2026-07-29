@@ -1,21 +1,24 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { useState } from "react";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import {
     FaTachometerAlt,
     FaUsers,
     FaPlus,
     FaSignOutAlt,
+    FaTimes,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
-
 import Navbar from "../components/layout/Navbar";
 
 function DashboardLayout() {
 
     const navigate = useNavigate();
 
-    const { logout } = useAuth();
+    const { logout, isAdmin } = useAuth();
+
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const handleLogout = () => {
 
@@ -26,26 +29,71 @@ function DashboardLayout() {
         navigate("/");
 
     };
+
+    const closeSidebar = () => setSidebarOpen(false);
+
     return (
-        <div className="min-h-screen flex bg-slate-100">
+
+        <div className="h-screen flex bg-slate-100 overflow-hidden">
+
+            {/* Mobile Overlay */}
+
+            {
+                sidebarOpen && (
+
+                    <div
+                        onClick={closeSidebar}
+                        className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+                    />
+
+                )
+            }
 
             {/* Sidebar */}
-            <aside className="w-64 bg-slate-900 text-white flex flex-col">
 
-                <div className="p-6 border-b border-slate-700">
+            <aside
+                className={`
+                    fixed lg:static
+                    top-0 left-0
+                    h-screen
+                    w-64
+                    bg-slate-900
+                    text-white
+                    flex
+                    flex-col
+                    z-50
+                    transform
+                    transition-transform
+                    duration-300
+                    ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+                    lg:translate-x-0
+                `}
+            >
+
+                <div className="p-6 border-b border-slate-700 flex justify-between items-center">
+
                     <h1 className="text-2xl font-bold">
                         EmployeeMS
                     </h1>
+
+                    <button
+                        onClick={closeSidebar}
+                        className="lg:hidden"
+                    >
+                        <FaTimes />
+                    </button>
+
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2">
+                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
 
                     <NavLink
                         to="/dashboard"
+                        onClick={closeSidebar}
                         className={({ isActive }) =>
                             `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
                                 isActive
-                                    ? "bg-blue-600 text-white"
+                                    ? "bg-blue-600"
                                     : "hover:bg-slate-800"
                             }`
                         }
@@ -56,10 +104,11 @@ function DashboardLayout() {
 
                     <NavLink
                         to="/employees"
+                        onClick={closeSidebar}
                         className={({ isActive }) =>
                             `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
                                 isActive
-                                    ? "bg-blue-600 text-white"
+                                    ? "bg-blue-600"
                                     : "hover:bg-slate-800"
                             }`
                         }
@@ -68,19 +117,26 @@ function DashboardLayout() {
                         Employees
                     </NavLink>
 
-                    <NavLink
-                        to="/employees/new"
-                        className={({ isActive }) =>
-                            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-                                isActive
-                                    ? "bg-blue-600 text-white"
-                                    : "hover:bg-slate-800"
-                            }`
-                        }
-                    >
-                        <FaPlus />
-                        Add Employee
-                    </NavLink>
+                    {
+                        isAdmin && (
+
+                            <NavLink
+                                to="/employees/new"
+                                onClick={closeSidebar}
+                                className={({ isActive }) =>
+                                    `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                                        isActive
+                                            ? "bg-blue-600"
+                                            : "hover:bg-slate-800"
+                                    }`
+                                }
+                            >
+                                <FaPlus />
+                                Add Employee
+                            </NavLink>
+
+                        )
+                    }
 
                 </nav>
 
@@ -88,7 +144,8 @@ function DashboardLayout() {
 
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-red-600 transition">
+                        className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-red-600 transition"
+                    >
                         <FaSignOutAlt />
                         Logout
                     </button>
@@ -97,17 +154,34 @@ function DashboardLayout() {
 
             </aside>
 
-            {/* Main Content */}
-            <main className="flex-1 p-8">
+            {/* Right Side */}
 
-                <Navbar />
+            <div className="flex-1 flex flex-col overflow-hidden">
 
-                <Outlet />
+                {/* Fixed Navbar */}
 
-            </main>
+                <div className="flex-shrink-0">
+
+                    <Navbar
+                        onMenuClick={() => setSidebarOpen(true)}
+                    />
+
+                </div>
+
+                {/* Scrollable Content */}
+
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+
+                    <Outlet />
+
+                </div>
+
+            </div>
 
         </div>
+
     );
+
 }
 
 export default DashboardLayout;
