@@ -1,9 +1,11 @@
-import EmployeeRow from "./EmployeeRow";
+import { useNavigate } from "react-router-dom";
 import {
     FaSort,
     FaSortUp,
     FaSortDown,
 } from "react-icons/fa";
+
+import EmployeeRow from "./EmployeeRow";
 
 function EmployeeTable({
                            employees,
@@ -12,6 +14,8 @@ function EmployeeTable({
                            direction,
                            onSort,
                        }) {
+
+    const navigate = useNavigate();
 
     const getIcon = (field) => {
 
@@ -34,6 +38,7 @@ function EmployeeTable({
     return (
 
         <>
+
             {/* Desktop */}
 
             <div className="hidden lg:block bg-white rounded-xl shadow overflow-x-auto">
@@ -149,8 +154,7 @@ function EmployeeTable({
 
                             <button
                                 onClick={() =>
-                                    window.location.href =
-                                        `/employees/edit/${employee.id}`
+                                    navigate(`/employees/edit/${employee.id}`)
                                 }
                                 className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg"
                             >
