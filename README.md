@@ -104,31 +104,31 @@ The application automatically:
 
 ## Login
 
-![Login](screenshots/Login.png)
+![Login](screenshots/AdminLogin.png)
 
 ---
 
 ## Dashboard
 
-![Dashboard](screenshots/Dashboard.png)
+![Dashboard](screenshots/AdminDashboard.png)
 
 ---
 
 ## Employee List
 
-![Employees](screenshots/EmployeeList.png)
+![Employees](screenshots/AdminEmployees.png)
 
 ---
 
 ## Create Employee
 
-![Create Employee](screenshots/CreateEmployee.png)
+![Create Employee](screenshots/AdminAddEmployee.png)
 
 ---
 
 ## Edit Employee
 
-![Edit Employee](screenshots/AdminEditEmployees.png)
+![Edit Employee](screenshots/AdminEditEmployee.png)
 
 ---
 
