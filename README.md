@@ -128,7 +128,7 @@ The application automatically:
 
 ## Edit Employee
 
-![Edit Employee](screenshots/EditEmployee.png)
+![Edit Employee](screenshots/AdminEditEmployees.png)
 
 ---
 
