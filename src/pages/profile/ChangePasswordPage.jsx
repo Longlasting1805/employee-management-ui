@@ -72,71 +72,69 @@ function ChangePasswordPage() {
 
     return (
 
-        <div className="max-w-2xl">
+        <div className="min-h-[80vh] flex items-center justify-center px-4">
 
-            <h1 className="text-3xl font-bold mb-8">
+            <div className="w-full max-w-2xl">
 
-                Change Password
+                <h1 className="text-3xl font-bold mb-8 text-center">
+                    Change Password
+                </h1>
 
-            </h1>
+                <form
+                    onSubmit={handleSubmit}
+                    className="bg-white shadow rounded-xl p-8 space-y-6"
+                >
 
-            <form
-                onSubmit={handleSubmit}
-                className="bg-white shadow rounded-xl p-8 space-y-6"
-            >
+                    <PasswordField
+                        label="Current Password"
+                        name="currentPassword"
+                        value={form.currentPassword}
+                        onChange={handleChange}
+                        show={showCurrent}
+                        toggle={() => setShowCurrent(!showCurrent)}
+                    />
 
-                <PasswordField
-                    label="Current Password"
-                    name="currentPassword"
-                    value={form.currentPassword}
-                    onChange={handleChange}
-                    show={showCurrent}
-                    toggle={() => setShowCurrent(!showCurrent)}
-                />
+                    <PasswordField
+                        label="New Password"
+                        name="newPassword"
+                        value={form.newPassword}
+                        onChange={handleChange}
+                        show={showNew}
+                        toggle={() => setShowNew(!showNew)}
+                    />
 
-                <PasswordField
-                    label="New Password"
-                    name="newPassword"
-                    value={form.newPassword}
-                    onChange={handleChange}
-                    show={showNew}
-                    toggle={() => setShowNew(!showNew)}
-                />
+                    <PasswordField
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        value={form.confirmPassword}
+                        onChange={handleChange}
+                        show={showConfirm}
+                        toggle={() => setShowConfirm(!showConfirm)}
+                    />
 
-                <PasswordField
-                    label="Confirm Password"
-                    name="confirmPassword"
-                    value={form.confirmPassword}
-                    onChange={handleChange}
-                    show={showConfirm}
-                    toggle={() => setShowConfirm(!showConfirm)}
-                />
+                    <div className="flex gap-4">
 
-                <div className="flex gap-4">
+                        <button
+                            type="submit"
+                            disabled={saving}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
+                        >
+                            {saving ? "Saving..." : "Change Password"}
+                        </button>
 
-                    <button
-                        type="submit"
-                        disabled={saving}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
-                    >
+                        <button
+                            type="button"
+                            onClick={() => navigate("/profile")}
+                            className="border px-6 py-3 rounded-lg"
+                        >
+                            Cancel
+                        </button>
 
-                        {saving ? "Saving..." : "Change Password"}
+                    </div>
 
-                    </button>
+                </form>
 
-                    <button
-                        type="button"
-                        onClick={() => navigate("/profile")}
-                        className="border px-6 py-3 rounded-lg"
-                    >
-
-                        Cancel
-
-                    </button>
-
-                </div>
-
-            </form>
+            </div>
 
         </div>
 
@@ -158,9 +156,7 @@ function PasswordField({
         <div>
 
             <label className="block mb-2 font-medium">
-
                 {label}
-
             </label>
 
             <div className="relative">
