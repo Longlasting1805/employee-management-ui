@@ -9,7 +9,7 @@ function ProtectedRoute({ children }) {
             <div className="min-h-screen flex items-center justify-center">
                 🚀 Starting Employee Management Platform...
 
-                Our secure server is waking up.
+                server is waking up.
 
                 This may take a few moments on the first visit.
             </div>
